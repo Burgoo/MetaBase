@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Burgoo.MetaBase", "Burgoo.MetaBase\Burgoo.MetaBase.csproj", "{DAC1A011-4A73-4FAF-9B0F-23576237E57F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Burgoo.MetaBase.Test", "Burgoo.MetaBase.Test\Burgoo.MetaBase.Test.csproj", "{A3E1F96C-BF32-41A7-B077-E1280EF16081}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DAC1A011-4A73-4FAF-9B0F-23576237E57F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAC1A011-4A73-4FAF-9B0F-23576237E57F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAC1A011-4A73-4FAF-9B0F-23576237E57F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAC1A011-4A73-4FAF-9B0F-23576237E57F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3E1F96C-BF32-41A7-B077-E1280EF16081}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3E1F96C-BF32-41A7-B077-E1280EF16081}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3E1F96C-BF32-41A7-B077-E1280EF16081}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3E1F96C-BF32-41A7-B077-E1280EF16081}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
