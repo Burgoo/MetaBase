@@ -9,9 +9,9 @@ using System.Data.SQLite;
 using System.Text;
 using System.ComponentModel;
 
-namespace Burgoo.MetaBase 
+namespace Burgoo.MetaBase.Data
 {
-	public class SQLiteMetaProvider : MetaProviderBase
+	public class SQLiteDataProvider : DataProvider
 	{
 		//
 		// connection used while object remains alive
@@ -90,14 +90,13 @@ namespace Burgoo.MetaBase
 			return rtrn;
 		}
 
-
+		/*
 		public override MetaAttributeList GetAttributes(GuidList EntityIDs, string Schema)
 		{
 			var rtrn = new MetaAttributeList();
 
 			using (var comm = conn.CreateCommand())
 			{
-				// where entity_id in ({1})
 				var sql = string.Format("select id, entity_id, name, value from {0}attribute where entity_id in ({1}) ;", Schema, EntityIDs.ToStringOfBinary());
 				comm.CommandText = sql.ToString();
 
@@ -125,10 +124,7 @@ namespace Burgoo.MetaBase
 
 			return rtrn;
 		}
-
-
-
-
+		 */
 
 
 		public override Guid CreateAttribute<t>(Guid EntityID, string Name, t Value, string Schema = "")
@@ -176,7 +172,6 @@ namespace Burgoo.MetaBase
 			return guid;
 		}
 
-
 		public override void CreateSchema(string Schema = "")
 		{
 			using (var comm = conn.CreateCommand())
@@ -213,7 +208,7 @@ namespace Burgoo.MetaBase
 			}
 		}
 
-		public override DataSet ExportTables(string Schema)
+		public override DataSet Export(string Schema= "")
 		{
 			using (var comm = conn.CreateCommand())
 			{
@@ -231,6 +226,114 @@ namespace Burgoo.MetaBase
 				return ds;
 			}
 		}
+
+
+		public override void Import(DataSet ds, string Schema = "")
+		{
+
+			//TODO: Implement the Import Function
+
+			return;
+		}
+
+
+/*
+		public override  Objects.MetaAttribute GetAttribute(Guid AttributeID, string Schema = "")
+		{
+			MetaAttribute rtrn = null;
+
+			using (var comm = conn.CreateCommand())
+			{
+				// where entity_id in ({1})
+				var sql = string.Format("select id, entity_id, name, value from {0}attribute where id = @id;", Schema);
+				comm.CommandText = sql.ToString();
+				comm.Parameters.AddWithValue("@id", AttributeID.ToString("N"));
+
+				Trace(comm);
+
+				var rdr = comm.ExecuteReader();
+
+				while (rdr.Read())
+				{
+					rtrn = new MetaAttribute()
+					{
+						ID = rdr.GetGuid(0)
+						, EntityID = rdr.GetGuid(1)
+						, Name = rdr.GetString(2)
+						, Value = rdr["value"]
+					}
+					;
+				}
+			}
+
+			return rtrn;
+		}
+
+*/
+		public override Objects.MetaAttributeList GetAttributes(GuidList EntityID, List<string> Names = null, string Schema = "")
+		{
+			var rtrn = new MetaAttributeList();
+
+			var in_str = "";
+
+			if (Names != null)
+			{
+				foreach (string s in Names)
+				{
+					if (in_str.Length > 0) in_str += ",";
+
+					in_str = string.Format("'{0}'", s);
+				}
+			}
+
+			using (var comm = conn.CreateCommand())
+			{
+				// where entity_id in ({1})
+
+				var sql = new StringBuilder();
+				sql.AppendLine( string.Format("select id, entity_id, name, value from {0}attribute", Schema) );
+
+
+				var where = new StringBuilder();
+
+
+				if (in_str.Length > 0 )
+				{ 
+
+					sql.AppendLine(string.Format(" and name in ({0})", in_str));
+				}
+
+
+
+				sql.AppendLine(";"); 
+
+				comm.CommandText = sql.ToString();
+
+				Trace(comm);
+
+				var rdr = comm.ExecuteReader();
+
+				while (rdr.Read())
+				{
+					rtrn.Add 
+					(
+						rdr.GetGuid(0)
+						, new MetaAttribute()
+						{
+							ID = rdr.GetGuid(0)
+							, EntityID = rdr.GetGuid(1)
+							, Name = rdr.GetString(2)
+							, Value = rdr["value"]
+						}
+					)
+					;
+				}
+			}
+
+			return rtrn;
+		}
+
+
 
 
 
@@ -281,6 +384,7 @@ namespace Burgoo.MetaBase
 			// The value was null in the database, so return the default value for T; this will vary based on what T is (i.e. int has a default of 0)
 			return default(T);
 		}
+
 
 		private bool IsNullableType(Type theValueType)
 		{
@@ -382,10 +486,5 @@ namespace Burgoo.MetaBase
 					throw new ProviderException("Unrecognized attribute: " + attr);
 			}
 		}
-
-
-
-
-
 	}
 }

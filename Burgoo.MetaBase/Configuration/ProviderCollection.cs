@@ -16,11 +16,11 @@ namespace Burgoo.MetaBase.Configuration
 {
 	public class ProviderCollection : System.Configuration.Provider.ProviderCollection
 	{
-		new public MetaProviderBase this[string name]
+		new public Data.DataProvider this[string name]
 		{
 			get
 			{
-				return (MetaProviderBase)base[name];
+				return (Data.DataProvider)base[name];
 			}
 		}
 
@@ -34,6 +34,5 @@ namespace Burgoo.MetaBase.Configuration
 
 			base.Add(provider);
 		}
-
 	}
 }

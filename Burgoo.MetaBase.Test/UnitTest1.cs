@@ -7,11 +7,9 @@ using System.Data;
 
 namespace MetaBase.Test
 {
-
 	[TestClass]
 	public class UnitTest1
 	{
-
 		[ClassInitialize]
 		public static void ClassInitialize(TestContext tc)
 		{
@@ -21,15 +19,12 @@ namespace MetaBase.Test
 		[ClassCleanup]
 		public static void ClassCleanup( )
 		{
-			var ds = MetaProvider.ExportTables();
+			var ds = MetaProvider.Export();
 			var writer = new System.IO.StringWriter();
 			ds.WriteXml(writer);
 			Trace.WriteLine (writer.ToString()); 
-
 			MetaProvider.Close();
 		}
-
-
 
 		[TestMethod]
 		public void CreateEntity()
@@ -69,19 +64,29 @@ namespace MetaBase.Test
 
 
 		[TestMethod]
-		public void SaveUserObject()
+		public void TC_1_1_SaveUserObject()
 		{
 			var u = new  Burgoo.MetaBase.Test.Objects.User() {LoginID = "rbforee" , Age =  43, DOB = new DateTime(1974,10,24) };
+					
 			MetaProvider.SaveObject(u);
+
 		}
 
 
 
 		[TestMethod]
-		public void GetUserObject()
+		public void TC_1_2_GetUserObject()
 		{
-			// TBD
+			var rtrn = MetaProvider.FindAttributes("LoginID", "rbforee");
+
+			foreach (Guid i in rtrn.Keys )
+			{
+				var user = MetaProvider.GetObject<Burgoo.MetaBase.Test.Objects.User>(i);
+
+				Assert.IsNotNull(user);
+
+				Trace.WriteLine(string.Format("{0} = {1}", "LoginID", user.LoginID ));
+			}
 		}	
-	
 	}
 }

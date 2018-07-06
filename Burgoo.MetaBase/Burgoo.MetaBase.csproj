@@ -68,10 +68,11 @@
     <Compile Include="Configuration\ProviderSection.cs" />
     <Compile Include="Objects\GuidList.cs" />
     <Compile Include="Objects\MetaAttributeList.cs" />
-    <Compile Include="SQLiteMetaProvider.cs" />
-    <Compile Include="MetaProviderBase.cs" />
+    <Compile Include="Data\SQLiteMetaProvider.cs" />
+    <Compile Include="Data\DataProvider.cs" />
     <Compile Include="Objects\MetaAttribute.cs" />
     <Compile Include="Objects\MetaEntity.cs" />
+    <Compile Include="Objects\Query.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

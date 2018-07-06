@@ -4,14 +4,16 @@ using System.Configuration;
 using System.Web.Configuration;
 using System.Reflection;
 using System.Data;
+using System.Collections.Generic;
 
 namespace Burgoo.MetaBase.Configuration
 {
 	public class MetaProvider : System.Configuration.Provider.ProviderBase
 	{
-		private static MetaProviderBase _provider = null;
+		private static Data.DataProvider _provider = null;
 		private static MetaBase.Configuration.ProviderCollection _providers = null;
 		private static object _lock = new object();
+
 
 		public static void SaveObject(object obj)  
 		{
@@ -23,10 +25,31 @@ namespace Burgoo.MetaBase.Configuration
 
 			foreach(PropertyInfo pi in t.GetProperties() )
 			{
+
 				Guid att = _provider.CreateAttribute(ent, pi.Name, pi.GetValue(obj));
 			}
-
 		}
+
+
+		//
+		// Get an object
+		//
+		public static T GetObject<T>(Guid EntityID)
+		{
+			var rtrn = (T)Activator.CreateInstance(typeof(T), new object[] { });
+			foreach (PropertyInfo pi in rtrn.GetType().GetProperties())
+			{
+
+
+				var ml = _provider.GetAttributes(EntityID, new List<string> { pi.Name });
+
+
+				pi.SetValue(_provider.GetAttributes(EntityID, pi.Name), rtrn);
+			}
+			return rtrn;
+		}
+
+
 
 		public static void Open()
 		{
@@ -42,10 +65,10 @@ namespace Burgoo.MetaBase.Configuration
 		}
 
 
-		public static DataSet ExportTables(string Schema = "")
+		public static DataSet Export(string Schema = "")
 		{
 			LoadProviders();
-			return _provider.ExportTables(Schema);
+			return _provider.Export(Schema);
 		}
 
 
@@ -89,11 +112,11 @@ namespace Burgoo.MetaBase.Configuration
 
 		public static MetaAttributeList FindAttributes(string Name, string Value, string Schema = "") 
 		{
-
 			LoadProviders();
 			var rtrn = _provider.FindAttributes(Name, Value, Schema);
 			return rtrn;
 		}
+
 
 	 	private static void LoadProviders ()
 		{
@@ -104,16 +127,16 @@ namespace Burgoo.MetaBase.Configuration
 					// Do this again to make sure _provider is still null
 					if (_provider == null)
 					{
-						ProviderSection section = (ProviderSection)ConfigurationManager.GetSection("Meta.Provider");
+						ProviderSection section = (ProviderSection)ConfigurationManager.GetSection("MetaBase");
 
 						if (section == null)
-							throw new System.Exception(string.Format("Section Not Found : {0}", "Meta.Provider"));
+							throw new System.Exception(string.Format("Section Not Found : {0}", "MetaBase"));
 
 
 						_providers = new ProviderCollection();
 
-						ProvidersHelper.InstantiateProviders(section.Providers, _providers, typeof(MetaProviderBase));
-						_provider = (MetaProviderBase)_providers[section.DefaultProvider];
+						ProvidersHelper.InstantiateProviders(section.Providers, _providers, typeof(Data.DataProvider));
+						_provider = (Data.DataProvider)_providers[section.DefaultProvider];
 
 						if (_provider == null)
 							throw new System.Configuration.Provider.ProviderException("Unable to load Data Provider");
